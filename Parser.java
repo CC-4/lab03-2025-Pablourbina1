@@ -93,7 +93,7 @@ public class Parser {
 
     private void popOp() {
         Token op = this.operadores.pop();
-
+  
         /* TODO: Su codigo aqui */
 
         /* El codigo de esta seccion se explicara en clase */
@@ -129,13 +129,87 @@ public class Parser {
 
     }
 
+      /*S ::= E;
+            E ::= E + E
+            |   E - E
+            |   E * E
+            |   E / E
+            |   E % E
+            |   E ^ E
+            |   - E
+            |   (E)
+            |   number
+        ---Arreglada---
+        S ::= E;
+        E ::= T A
+        A ::= + T A | - T A | lambda
+
+        T  ::= F Z
+        Z ::= * F Z | / F Z | % F Z | lambda
+
+        F ::= X B
+        B ::= ^ F | lambda
+
+        X ::= ~ X | N
+
+        N ::= (E) | number
+
+
+
+
+            
+*/ 
+
     private boolean S() {
         return E() && term(Token.SEMI);
     }
 
     private boolean E() {
-        return false;
+        return T() && A();
     }
+
+    private boolean A() {
+        if(!T()){
+        return false;
+        }
+        return term(operadores.get(next).getId()) && T() && A();
+    }
+
+    private boolean T() {
+        return F() && Z();
+    }
+
+    private boolean Z() {
+        if(!F()){
+        return false;
+        }
+        return term(operadores.get(next).getId()) && F() && Z();
+    }
+
+    private boolean F() {
+        return X() && B();
+    }
+
+    private boolean B() {
+        if(!F()){
+        return false;
+        }
+        return term(operadores.get(next).getId()) && F();
+    }
+
+    private boolean X() {
+        if(operadores.get(next).getId() != 11){
+        return N();
+        }
+        return term(operadores.get(next).getId()) && X();
+    }
+
+    private boolean N() {
+        if(operadores.get(next).getId() != 9){
+        return term(operadores.get(next).getId()) && E();
+    }
+    return true;
+}
 
     /* TODO: sus otras funciones aqui */
 }
