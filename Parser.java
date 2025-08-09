@@ -47,7 +47,7 @@ public class Parser {
     private boolean term(int id) {
         if(this.next < this.tokens.size() && this.tokens.get(this.next).equals(id)) {
             
-            // Codigo para el Shunting Yard Algorithm
+            // para el Shunting Yard Algorithm
             /*
             if (id == Token.NUMBER) {
 				// Encontramos un numero
@@ -169,10 +169,12 @@ public class Parser {
     }
 
     private boolean A() {
-        if(!T()){
-        return false;
+        if (next < tokens.size()) {
+            if(tokens.get(next).getId() == 1|| tokens.get(next).getId() == 2){
+                return term(tokens.get(next).getId()) && T() && A();
         }
-        return term(operadores.get(next).getId()) && T() && A();
+        }
+        return true;
     }
 
     private boolean T() {
@@ -180,10 +182,12 @@ public class Parser {
     }
 
     private boolean Z() {
-        if(!F()){
-        return false;
+        if (next < tokens.size()){
+        if(tokens.get(next).getId() == 3|| tokens.get(next).getId() == 4 || tokens.get(next).getId() == 5){
+            return term(tokens.get(next).getId()) && F() && Z();
         }
-        return term(operadores.get(next).getId()) && F() && Z();
+        }
+        return true;
     }
 
     private boolean F() {
@@ -191,24 +195,32 @@ public class Parser {
     }
 
     private boolean B() {
-        if(!F()){
-        return false;
+        if (next < tokens.size()){
+        if(tokens.get(next).getId() == 6){
+            return term(tokens.get(next).getId()) && F();
         }
-        return term(operadores.get(next).getId()) && F();
+        }
+        return true;
     }
 
     private boolean X() {
-        if(operadores.get(next).getId() != 11){
-        return N();
+        if (next < tokens.size()){
+        if(tokens.get(next).getId() == 11){
+            return term(tokens.get(next).getId()) && X();
+        } 
         }
-        return term(operadores.get(next).getId()) && X();
+        return N();
     }
 
     private boolean N() {
-        if(operadores.get(next).getId() != 9){
-        return term(operadores.get(next).getId()) && E();
+    if (next < tokens.size()){
+        if(tokens.get(next).getId() == 7){
+            return term(tokens.get(next).getId()) && E() && term(Token.RPAREN);
+    } else if (tokens.get(next).getId() == 9) {
+        return term(Token.NUMBER);
     }
-    return true;
+        }
+    return false;
 }
 
     /* TODO: sus otras funciones aqui */
